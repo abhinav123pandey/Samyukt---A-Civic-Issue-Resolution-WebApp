@@ -1,0 +1,406 @@
+<%- include('../partials/header', { title: 'Update Complaint Status - Samyukt' }) %>
+<%- include('../partials/navbar') %>
+
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-6">
+            <a href="/resolver/dashboard" class="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+            </a>
+            <h1 class="text-2xl font-bold text-gray-900">Update Complaint Status</h1>
+            <p class="text-gray-600 mt-2">Update the progress and provide ETA for complaint resolution</p>
+        </div>
+
+        <!-- Current Complaint Info -->
+        <div class="bg-white shadow rounded-lg mb-6">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900">Complaint Information</h2>
+            </div>
+            <div class="px-6 py-4">
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <p class="text-gray-600">Complaint ID</p>
+                        <p class="font-medium" id="currentComplaintId">CMP-000</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Category</p>
+                        <p class="font-medium" id="currentComplaintCategory">Loading...</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Location</p>
+                        <p class="font-medium" id="currentComplaintLocation">Loading...</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Current Status</p>
+                        <p class="font-medium" id="currentComplaintStatus">Loading...</p>
+                    </div>
+                    <div class="col-span-2">
+                        <p class="text-gray-600">Description</p>
+                        <p class="font-medium" id="currentComplaintDescription">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Update Form -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900">Update Status</h2>
+            </div>
+
+            <form class="px-6 py-6 space-y-6" id="statusUpdateForm">
+                <!-- Status Selection -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-3">
+                        Update Status <span class="text-red-500">*</span>
+                    </label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Pending -->
+                        <label class="relative flex cursor-pointer">
+                            <input type="radio" name="status" value="pending" class="sr-only" checked>
+                            <div class="status-option flex items-center justify-center p-4 border-2 border-gray-200 rounded-lg w-full transition-all duration-200">
+                                <div class="text-center">
+                                    <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                        <i class="fas fa-clock text-yellow-600"></i>
+                                    </div>
+                                    <span class="block text-sm font-medium text-gray-900">Pending</span>
+                                    <span class="block text-xs text-gray-500">Awaiting action</span>
+                                </div>
+                            </div>
+                        </label>
+
+                        <!-- In Progress -->
+                        <label class="relative flex cursor-pointer">
+                            <input type="radio" name="status" value="in-progress" class="sr-only">
+                            <div class="status-option flex items-center justify-center p-4 border-2 border-gray-200 rounded-lg w-full transition-all duration-200">
+                                <div class="text-center">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                        <i class="fas fa-tools text-blue-600"></i>
+                                    </div>
+                                    <span class="block text-sm font-medium text-gray-900">In Progress</span>
+                                    <span class="block text-xs text-gray-500">Work started</span>
+                                </div>
+                            </div>
+                        </label>
+
+                        <!-- Resolved -->
+                        <label class="relative flex cursor-pointer">
+                            <input type="radio" name="status" value="resolved" class="sr-only">
+                            <div class="status-option flex items-center justify-center p-4 border-2 border-gray-200 rounded-lg w-full transition-all duration-200">
+                                <div class="text-center">
+                                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                        <i class="fas fa-check-circle text-green-600"></i>
+                                    </div>
+                                    <span class="block text-sm font-medium text-gray-900">Resolved</span>
+                                    <span class="block text-xs text-gray-500">Issue fixed</span>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- ETA Section (shown for pending/in-progress) -->
+                <div id="etaSection" class="hidden">
+                    <label for="eta" class="block text-sm font-medium text-gray-700 mb-2">
+                        Estimated Resolution Time <span class="text-red-500">*</span>
+                    </label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <input type="date" id="etaDate" name="etaDate" 
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                min="">
+                        </div>
+                        <div>
+                            <select id="etaTime" name="etaTime" 
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <option value="">Select Time</option>
+                                <option value="09:00">9:00 AM</option>
+                                <option value="10:00">10:00 AM</option>
+                                <option value="11:00">11:00 AM</option>
+                                <option value="12:00">12:00 PM</option>
+                                <option value="13:00">1:00 PM</option>
+                                <option value="14:00">2:00 PM</option>
+                                <option value="15:00">3:00 PM</option>
+                                <option value="16:00">4:00 PM</option>
+                                <option value="17:00">5:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">Provide when you expect to resolve this issue</p>
+                </div>
+
+                <!-- Update Notes -->
+                <div>
+                    <label for="updateNotes" class="block text-sm font-medium text-gray-700 mb-2">
+                        Update Notes <span class="text-red-500">*</span>
+                    </label>
+                    <textarea id="updateNotes" name="updateNotes" rows="4" 
+                        class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        placeholder="Describe the current status, actions taken, or next steps..."></textarea>
+                    <p class="text-xs text-gray-500 mt-2">This note will be visible to the citizen</p>
+                </div>
+
+                <!-- Resolution Image (for resolved status) -->
+                <div id="resolutionImageSection" class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Resolution Proof (Optional)
+                    </label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                        <i class="fas fa-camera text-gray-400 text-2xl mb-2"></i>
+                        <p class="text-sm text-gray-600 mb-2">Upload photo after resolution</p>
+                        <input type="file" id="resolutionImage" name="resolutionImage" 
+                            accept="image/*" class="hidden">
+                        <button type="button" onclick="document.getElementById('resolutionImage').click()" 
+                            class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700">
+                            <i class="fas fa-upload mr-1"></i> Choose File
+                        </button>
+                        <p class="text-xs text-gray-500 mt-2">Max file size: 5MB</p>
+                    </div>
+                    <div id="imagePreview" class="mt-3 hidden">
+                        <img id="previewImage" src="" alt="Preview" class="max-w-full h-32 object-cover rounded">
+                        <button type="button" onclick="removeImage()" class="text-red-600 text-sm mt-1">
+                            <i class="fas fa-times mr-1"></i> Remove
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex space-x-4 pt-6">
+                    <button type="button" onclick="window.history.back()" 
+                        class="flex-1 py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                        class="flex-1 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Update Status
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h3 class="font-medium text-blue-900 mb-2">Quick Status Updates</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <button onclick="fillQuickUpdate('Team dispatched for inspection')" 
+                    class="text-left text-sm text-blue-700 hover:text-blue-900 p-2 rounded hover:bg-blue-100">
+                    <i class="fas fa-car mr-1"></i> Team Dispatched
+                </button>
+                <button onclick="fillQuickUpdate('Waiting for parts/equipment')" 
+                    class="text-left text-sm text-blue-700 hover:text-blue-900 p-2 rounded hover:bg-blue-100">
+                    <i class="fas fa-truck mr-1"></i> Awaiting Materials
+                </button>
+                <button onclick="fillQuickUpdate('Work in progress, expected completion today')" 
+                    class="text-left text-sm text-blue-700 hover:text-blue-900 p-2 rounded hover:bg-blue-100">
+                    <i class="fas fa-hammer mr-1"></i> Work Started
+                </button>
+                <button onclick="fillQuickUpdate('Issue resolved successfully')" 
+                    class="text-left text-sm text-blue-700 hover:text-blue-900 p-2 rounded hover:bg-blue-100">
+                    <i class="fas fa-check mr-1"></i> Issue Resolved
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Demo complaint data
+    const demoComplaint = {
+        id: 'CMP-001',
+        title: 'Garbage not collected for 3 days',
+        category: 'Garbage',
+        location: 'RK Puram, Sector 5',
+        status: 'pending',
+        description: 'Garbage has not been collected from our area for the past 3 days, causing foul smell and health concerns.',
+        createdAt: '2024-01-15'
+    };
+
+    function loadComplaintData() {
+        const complaintId = localStorage.getItem('currentComplaintId') || 'CMP-001';
+        
+        // In real app, this would be an API call
+        // For demo, we'll use the complaintId to load appropriate data
+        document.getElementById('currentComplaintId').textContent = complaintId;
+        document.getElementById('currentComplaintCategory').textContent = demoComplaint.category;
+        document.getElementById('currentComplaintLocation').textContent = demoComplaint.location;
+        document.getElementById('currentComplaintStatus').textContent = getStatusText(demoComplaint.status);
+        document.getElementById('currentComplaintDescription').textContent = demoComplaint.description;
+
+        // Set min date for ETA to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('etaDate').min = today;
+    }
+
+    function getStatusText(status) {
+        const texts = {
+            'pending': 'Pending',
+            'in-progress': 'In Progress',
+            'resolved': 'Resolved'
+        };
+        return texts[status] || status;
+    }
+
+    // Status selection handling
+    document.addEventListener('DOMContentLoaded', function() {
+        loadComplaintData();
+        
+        // Status option styling
+        const statusOptions = document.querySelectorAll('.status-option');
+        const statusInputs = document.querySelectorAll('input[name="status"]');
+        
+        statusInputs.forEach((input, index) => {
+            input.addEventListener('change', function() {
+                // Remove active class from all
+                statusOptions.forEach(opt => {
+                    opt.classList.remove('border-blue-500', 'bg-blue-50');
+                    opt.classList.add('border-gray-200');
+                });
+                
+                // Add active class to selected
+                statusOptions[index].classList.add('border-blue-500', 'bg-blue-50');
+                statusOptions[index].classList.remove('border-gray-200');
+                
+                // Show/hide sections based on status
+                const status = this.value;
+                toggleSections(status);
+            });
+            
+            // Set initial active state
+            if (input.checked) {
+                statusOptions[index].classList.add('border-blue-500', 'bg-blue-50');
+                statusOptions[index].classList.remove('border-gray-200');
+                toggleSections(input.value);
+            }
+        });
+
+        // Image upload preview
+        document.getElementById('resolutionImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImage').src = e.target.result;
+                    document.getElementById('imagePreview').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Form submission
+        document.getElementById('statusUpdateForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const status = formData.get('status');
+            const updateNotes = formData.get('updateNotes');
+            
+            if (!updateNotes) {
+                alert('Please provide update notes');
+                return;
+            }
+            
+            if ((status === 'pending' || status === 'in-progress') && (!formData.get('etaDate') || !formData.get('etaTime'))) {
+                alert('Please provide estimated resolution time');
+                return;
+            }
+            
+            // Simulate API call
+            simulateStatusUpdate(formData);
+        });
+    });
+
+    function toggleSections(status) {
+        const etaSection = document.getElementById('etaSection');
+        const resolutionImageSection = document.getElementById('resolutionImageSection');
+        
+        // Show ETA for pending and in-progress
+        if (status === 'pending' || status === 'in-progress') {
+            etaSection.classList.remove('hidden');
+        } else {
+            etaSection.classList.add('hidden');
+        }
+        
+        // Show resolution image for resolved
+        if (status === 'resolved') {
+            resolutionImageSection.classList.remove('hidden');
+        } else {
+            resolutionImageSection.classList.add('hidden');
+        }
+    }
+
+    function fillQuickUpdate(text) {
+        document.getElementById('updateNotes').value = text;
+    }
+
+    function removeImage() {
+        document.getElementById('resolutionImage').value = '';
+        document.getElementById('imagePreview').classList.add('hidden');
+    }
+
+    function simulateStatusUpdate(formData) {
+        // Show loading state
+        const submitBtn = document.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Updating...';
+        submitBtn.disabled = true;
+        
+        // Simulate API delay
+        setTimeout(() => {
+            // In real app, this would be an API call
+            const status = formData.get('status');
+            const complaintId = localStorage.getItem('currentComplaintId');
+            
+            // Show success message
+            alert(`Status updated to ${getStatusText(status)} successfully!`);
+            
+            // Redirect back to dashboard
+            window.location.href = '/resolver/dashboard';
+        }, 1500);
+    }
+
+    // Quick templates for common updates
+    const quickTemplates = {
+        'Team dispatched for inspection': {
+            status: 'in-progress',
+            notes: 'Our inspection team has been dispatched to assess the situation. Expected to complete inspection within 2 hours.'
+        },
+        'Waiting for parts/equipment': {
+            status: 'in-progress', 
+            notes: 'Repair work is pending due to unavailability of required parts. New parts have been ordered and expected to arrive tomorrow.'
+        },
+        'Work in progress': {
+            status: 'in-progress',
+            notes: 'Our team has started the repair work. The issue is being addressed and we expect to complete it by end of day.'
+        },
+        'Issue resolved': {
+            status: 'resolved',
+            notes: 'The issue has been successfully resolved. All necessary repairs have been completed and verified.'
+        }
+    };
+</script>
+
+<style>
+    .status-option {
+        transition: all 0.2s ease-in-out;
+    }
+    
+    input[name="status"]:checked + .status-option {
+        border-color: #3b82f6;
+        background-color: #eff6ff;
+    }
+    
+    input[name="status"]:checked + .status-option .fa-clock {
+        color: #d97706;
+    }
+    
+    input[name="status"]:checked + .status-option .fa-tools {
+        color: #1d4ed8;
+    }
+    
+    input[name="status"]:checked + .status-option .fa-check-circle {
+        color: #059669;
+    }
+</style>
+
+<%- include('../partials/footer') %>

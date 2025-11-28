@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard - Samyukt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        
+        .profile-image-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .profile-image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .profile-image-container:hover .profile-image-overlay {
+            opacity: 1;
+        }
+        
+        .stat-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-card {
+            transition: transform 0.3s ease;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .complaint-row {
+            transition: background-color 0.2s ease;
+        }
+        
+        .complaint-row:hover {
+            background-color: #f9fafb;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 50;
+                height: 100vh;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+            }
+            
+            .overlay.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Mobile Menu Button -->
+    <div class="lg:hidden fixed top-4 left-4 z-50">
+        <button id="mobileMenuButton" class="p-2 rounded-md bg-white shadow-md text-gray-700">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <!-- Overlay for mobile -->
+    <div id="overlay" class="overlay"></div>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 bg-white shadow-lg min-h-screen fixed lg:static z-30">
+            <!-- Profile Section -->
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex flex-col items-center">
+                    <div class="profile-image-container mb-4">
+                        <img id="profileImage" src="https://via.placeholder.com/100" alt="Profile" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow">
+                        <div class="profile-image-overlay">
+                            <i class="fas fa-camera text-white text-xl"></i>
+                        </div>
+                        <input type="file" id="imageUpload" class="hidden" accept="image/*">
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-800" id="userName"><%=user.name%></h2>
+                    <p class="text-gray-600 text-sm">Citizen</p>
+                    <p class="text-gray-500 text-xs mt-1">Member since Jan 2023</p>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#" class="flex items-center p-3 text-gray-700 bg-blue-50 rounded-lg font-medium">
+                            <i class="fas fa-tachometer-alt mr-3 text-blue-600"></i>
+                            Dashboard Overview
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/user/complaints" class="flex items-center p-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                            <i class="fas fa-list mr-3"></i>
+                            My Complaints
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/user/createComplaint" class="flex items-center p-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                            <i class="fas fa-plus-circle mr-3"></i>
+                            File New Complaint
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                            <i class="fas fa-cog mr-3"></i>
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 lg:ml-0">
+            <!-- Header -->
+            <header class="bg-white shadow-sm">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between items-center py-4">
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900">My Civic Dashboard</h1>
+                            <p class="text-gray-600">Track, report, and resolve community issues</p>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <!-- Logout Button in Header -->
+                            <a href="/auth/logout" class="flex items-center text-gray-600 hover:text-red-600 transition-colors">
+                                <i class="fas fa-sign-out-alt mr-2"></i>
+                                <span class="hidden md:inline">Logout</span>
+                            </a>
+                            <div class="flex items-center space-x-3">
+                                <div class="text-right hidden md:block">
+                                    <p class="font-medium text-gray-900">Alex Johnson</p>
+                                    <p class="text-sm text-gray-500">Citizen</p>
+                                </div>
+                                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+                                    AJ
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Dashboard Content -->
+            <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Stats Overview -->
+                <div class="mb-10">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">Issue Resolution Overview</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Total Complaints -->
+                        <div class="stat-card bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
+                            <div class="flex items-center">
+                                <div class="p-3 bg-blue-100 rounded-lg">
+                                    <i class="fas fa-list text-blue-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">Total Issues Reported</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="totalComplaints">0</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pending -->
+                        <div class="stat-card bg-white rounded-xl shadow-md p-6 border-l-4 border-yellow-500">
+                            <div class="flex items-center">
+                                <div class="p-3 bg-yellow-100 rounded-lg">
+                                    <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">Awaiting Response</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="pendingComplaints">0</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- In Progress -->
+                        <div class="stat-card bg-white rounded-xl shadow-md p-6 border-l-4 border-orange-500">
+                            <div class="flex items-center">
+                                <div class="p-3 bg-orange-100 rounded-lg">
+                                    <i class="fas fa-tools text-orange-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">Under Resolution</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="inProgressComplaints">0</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Resolved -->
+                        <div class="stat-card bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
+                            <div class="flex items-center">
+                                <div class="p-3 bg-green-100 rounded-lg">
+                                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-600">Successfully Resolved</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="resolvedComplaints">0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="mb-10">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">Quick Actions</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="action-card bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-md p-6 text-white">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-white mr-4">
+                                    <i class="fas fa-plus text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold">Report New Issue</h3>
+                                    <p class="text-blue-100">File a complaint for civic issues in your area</p>
+                                </div>
+                            </div>
+                            <a href="/user/createComplaint" class="inline-flex items-center font-medium mt-2 bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors">
+                                File Complaint <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+
+                        <div class="action-card bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-md p-6 text-white">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-white mr-4">
+                                    <i class="fas fa-history text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold">Issue History</h3>
+                                    <p class="text-green-100">View all your past and current complaints</p>
+                                </div>
+                            </div>
+                            <a href="/user/complaints" class="inline-flex items-center font-medium mt-2 bg-white text-green-600 px-4 py-2 rounded-lg hover:bg-green-50 transition-colors">
+                                View History <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Complaints -->
+                <div class="bg-white shadow-md rounded-xl overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-lg font-medium text-gray-900">Recent Issues Reported</h2>
+                            <a href="/user/complaints" class="text-blue-600 hover:text-blue-800 text-sm font-medium inline-flex items-center">
+                                View All Reports <i class="fas fa-arrow-right ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Issue Details
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Category
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Date Reported
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="complaintsTable">
+                                <!-- Complaints will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="emptyState" class="text-center py-12 hidden">
+                        <i class="fas fa-inbox text-gray-400 text-4xl mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">No issues reported yet</h3>
+                        <p class="text-gray-500 mb-4">Start by reporting your first community issue.</p>
+                        <a href="/user/createComplaint" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-medium inline-flex items-center">
+                            <i class="fas fa-plus mr-2"></i>Report First Issue
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tips Section -->
+                <div class="mt-8 bg-gradient-to-r from-yellow-50 to-amber-50 border border-yellow-200 rounded-xl p-6">
+                    <div class="flex items-start">
+                        <i class="fas fa-lightbulb text-yellow-600 text-xl mt-1 mr-4"></i>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Tips for Effective Issue Reporting</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div class="flex items-start">
+                                    <i class="fas fa-camera text-yellow-600 mt-1 mr-2"></i>
+                                    <span>Include clear photos of the issue for better understanding</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-map-marker-alt text-yellow-600 mt-1 mr-2"></i>
+                                    <span>Pinpoint exact location using maps when possible</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-file-alt text-yellow-600 mt-1 mr-2"></i>
+                                    <span>Provide detailed description with relevant specifics</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-check-circle text-yellow-600 mt-1 mr-2"></i>
+                                    <span>Follow up regularly for timely resolution</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Demo complaints data for user
+        const userComplaints = [
+            {
+                id: 'CMP-001',
+                title: 'Garbage not collected for 3 days',
+                category: 'Garbage',
+                location: 'RK Puram, Sector 5',
+                status: 'pending',
+                createdAt: '2024-01-15',
+                description: 'Garbage has not been collected from our area for the past 3 days, causing foul smell and health concerns.',
+                image: '/images/garbage.jpg',
+                department: 'Municipal Corporation',
+                lastUpdate: '2024-01-15 10:30'
+            },
+            {
+                id: 'CMP-002',
+                title: 'Broken street light',
+                category: 'Electricity',
+                location: 'MG Road, Block B',
+                status: 'in-progress',
+                createdAt: '2024-01-14',
+                description: 'Street light pole number 45 is broken and leaning dangerously.',
+                image: '/images/street-light.jpg',
+                department: 'Electricity Department',
+                lastUpdate: '2024-01-15 09:30',
+                eta: '2024-01-18'
+            },
+            {
+                id: 'CMP-003',
+                title: 'Water leakage on main road',
+                category: 'Water',
+                location: 'Nehru Nagar',
+                status: 'resolved',
+                createdAt: '2024-01-10',
+                resolvedAt: '2024-01-12',
+                description: 'Major water pipeline leakage causing water wastage and road damage.',
+                image: '/images/water-leakage.jpg',
+                department: 'Water Department',
+                lastUpdate: '2024-01-12 16:20',
+                resolutionNote: 'Pipeline repaired and road restoration completed.'
+            }
+        ];
+
+        function loadUserComplaints() {
+            const tableBody = document.getElementById('complaintsTable');
+            const emptyState = document.getElementById('emptyState');
+
+            if (userComplaints.length === 0) {
+                tableBody.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            // Update stats
+            updateUserStats();
+
+            // Generate table rows
+            tableBody.innerHTML = userComplaints.map(complaint => `
+                <tr class="complaint-row">
+                    <td class="px-6 py-4">
+                        <div class="text-sm font-medium text-gray-900">${complaint.title}</div>
+                        <div class="text-sm text-gray-500">${complaint.location}</div>
+                        <div class="text-xs text-gray-400 mt-1">ID: ${complaint.id}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                            ${getCategoryClass(complaint.category)}">
+                            ${complaint.category}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                            ${getStatusClass(complaint.status)}">
+                            ${getStatusText(complaint.status)}
+                        </span>
+                        ${complaint.eta ? `
+                            <div class="text-xs text-gray-500 mt-1">
+                                ETA: ${formatDate(complaint.eta)}
+                            </div>
+                        ` : ''}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${formatDate(complaint.createdAt)}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="viewComplaint('${complaint.id}')" 
+                            class="text-blue-600 hover:text-blue-900 mr-3 transition-colors">View Details</button>
+                        ${complaint.status !== 'resolved' ? 
+                            `<button onclick="trackComplaint('${complaint.id}')" 
+                             class="text-green-600 hover:text-green-900 transition-colors">Track Progress</button>` : 
+                            '<span class="text-gray-400">Resolved</span>'
+                        }
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateUserStats() {
+            const total = userComplaints.length;
+            const pending = userComplaints.filter(c => c.status === 'pending').length;
+            const inProgress = userComplaints.filter(c => c.status === 'in-progress').length;
+            const resolved = userComplaints.filter(c => c.status === 'resolved').length;
+
+            document.getElementById('totalComplaints').textContent = total;
+            document.getElementById('pendingComplaints').textContent = pending;
+            document.getElementById('inProgressComplaints').textContent = inProgress;
+            document.getElementById('resolvedComplaints').textContent = resolved;
+        }
+
+        function getCategoryClass(category) {
+            const classes = {
+                'Garbage': 'bg-red-100 text-red-800',
+                'Electricity': 'bg-yellow-100 text-yellow-800',
+                'Water': 'bg-blue-100 text-blue-800',
+                'Road': 'bg-orange-100 text-orange-800'
+            };
+            return classes[category] || 'bg-gray-100 text-gray-800';
+        }
+
+        function getStatusClass(status) {
+            const classes = {
+                'pending': 'bg-yellow-100 text-yellow-800',
+                'in-progress': 'bg-blue-100 text-blue-800',
+                'resolved': 'bg-green-100 text-green-800'
+            };
+            return classes[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                'pending': 'Awaiting Response',
+                'in-progress': 'Under Resolution',
+                'resolved': 'Resolved'
+            };
+            return texts[status] || status;
+        }
+
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('en-IN');
+        }
+
+        function viewComplaint(complaintId) {
+            localStorage.setItem('currentComplaintId', complaintId);
+            window.location.href = '/user/complaint-details';
+        }
+
+        function trackComplaint(complaintId) {
+            localStorage.setItem('currentComplaintId', complaintId);
+            window.location.href = '/user/track-complaint';
+        }
+
+        // Profile image upload functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserComplaints();
+            
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
+            
+            overlay.addEventListener('click', function() {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+            
+            // Profile image upload
+            const profileImage = document.getElementById('profileImage');
+            const imageUpload = document.getElementById('imageUpload');
+            const profileImageContainer = document.querySelector('.profile-image-container');
+            
+            profileImageContainer.addEventListener('click', function() {
+                imageUpload.click();
+            });
+            
+            imageUpload.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        profileImage.src = event.target.result;
+                        // Here you would typically send the image to your backend
+                        // using FormData and multer for processing
+                        console.log('Image selected for upload:', e.target.files[0].name);
+                    };
+                    
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

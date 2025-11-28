@@ -1,0 +1,342 @@
+<%- include('../partials/header', { title: 'Complaint Details - Samyukt' }) %>
+<%- include('../partials/navbar') %>
+
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-6">
+            <a href="/resolver/dashboard" class="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+            </a>
+            <h1 class="text-2xl font-bold text-gray-900">Complaint Details</h1>
+        </div>
+
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <!-- Complaint Header -->
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-900" id="complaintTitle">Loading...</h2>
+                        <div class="flex items-center space-x-4 mt-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" id="complaintStatus">
+                                Loading...
+                            </span>
+                            <span class="text-sm text-gray-500" id="complaintId">CMP-000</span>
+                            <span class="text-sm text-gray-500" id="complaintDate">Loading...</span>
+                        </div>
+                    </div>
+                    <button onclick="updateComplaintStatus()" 
+                        class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700">
+                        <i class="fas fa-edit mr-1"></i> Update Status
+                    </button>
+                </div>
+            </div>
+
+            <!-- Complaint Content -->
+            <div class="px-6 py-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Main Content -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Description -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-3">Issue Description</h3>
+                            <p class="text-gray-700 bg-gray-50 p-4 rounded-lg" id="complaintDescription">
+                                Loading...
+                            </p>
+                        </div>
+
+                        <!-- Issue Image -->
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-3">Issue Photo</h3>
+                            <div class="bg-gray-100 rounded-lg p-4 text-center">
+                                <img id="issueImage" src="" alt="Issue photo" 
+                                    class="mx-auto max-w-full h-64 object-cover rounded hidden">
+                                <div id="noImage" class="text-gray-500">
+                                    <i class="fas fa-image text-4xl mb-2"></i>
+                                    <p>No image provided</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Resolution (if resolved) -->
+                        <div id="resolutionSection" class="hidden">
+                            <h3 class="text-lg font-medium text-gray-900 mb-3">Resolution Details</h3>
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                <p class="text-green-800 font-medium mb-2">Issue Resolved</p>
+                                <p class="text-gray-700 mb-3" id="resolutionNote"></p>
+                                <p class="text-sm text-gray-600">Resolved on: <span id="resolvedDate"></span></p>
+                                <div class="mt-3">
+                                    <img id="resolvedImage" src="" alt="Resolution photo" 
+                                        class="max-w-full h-48 object-cover rounded hidden">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="space-y-6">
+                        <!-- Complaint Info -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h3 class="font-medium text-gray-900 mb-3">Complaint Information</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <p class="text-sm text-gray-600">Category</p>
+                                    <p class="font-medium" id="complaintCategory">Loading...</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Location</p>
+                                    <p class="font-medium" id="complaintLocation">Loading...</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Priority</p>
+                                    <p class="font-medium" id="complaintPriority">Loading...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Citizen Info -->
+                        <div class="bg-blue-50 rounded-lg p-4">
+                            <h3 class="font-medium text-gray-900 mb-3">Citizen Information</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <p class="text-sm text-gray-600">Reported By</p>
+                                    <p class="font-medium" id="citizenName">Loading...</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Contact</p>
+                                    <p class="font-medium" id="citizenContact">Loading...</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Area</p>
+                                    <p class="font-medium" id="citizenArea">Loading...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Status Timeline -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                            <h3 class="font-medium text-gray-900 mb-3">Status Timeline</h3>
+                            <div class="space-y-4" id="statusTimeline">
+                                <!-- Timeline will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Demo data for complaint details
+    const demoComplaintDetails = {
+        'CMP-001': {
+            id: 'CMP-001',
+            title: 'Garbage not collected for 3 days',
+            category: 'Garbage',
+            location: 'RK Puram, Sector 5',
+            status: 'pending',
+            priority: 'High',
+            createdAt: '2024-01-15',
+            description: 'Garbage has not been collected from our area for the past 3 days, causing foul smell and health concerns. The garbage bins are overflowing and stray animals are scattering waste everywhere.',
+            image: '/images/garbage.jpg',
+            citizen: {
+                name: 'Rahul Sharma',
+                phone: '9876543210',
+                area: 'RK Puram'
+            },
+            timeline: [
+                { status: 'registered', date: '2024-01-15 10:30', note: 'Complaint registered' },
+                { status: 'assigned', date: '2024-01-15 11:00', note: 'Assigned to Municipal Department' }
+            ]
+        },
+        'CMP-002': {
+            id: 'CMP-002',
+            title: 'Broken street light',
+            category: 'Electricity',
+            location: 'MG Road, Block B',
+            status: 'in-progress',
+            priority: 'Medium',
+            createdAt: '2024-01-14',
+            description: 'Street light pole number 45 is broken and leaning dangerously. It might fall during strong winds and cause accidents.',
+            image: '/images/street-light.jpg',
+            eta: '2024-01-18',
+            citizen: {
+                name: 'Priya Singh',
+                phone: '9876543211',
+                area: 'MG Road'
+            },
+            timeline: [
+                { status: 'registered', date: '2024-01-14 14:20', note: 'Complaint registered' },
+                { status: 'assigned', date: '2024-01-14 15:00', note: 'Assigned to Electricity Department' },
+                { status: 'in-progress', date: '2024-01-15 09:30', note: 'Inspection team dispatched' }
+            ]
+        },
+        'CMP-003': {
+            id: 'CMP-003',
+            title: 'Water leakage on main road',
+            category: 'Water',
+            location: 'Nehru Nagar',
+            status: 'resolved',
+            priority: 'High',
+            createdAt: '2024-01-10',
+            resolvedAt: '2024-01-12',
+            description: 'Major water pipeline leakage causing water wastage and road damage. Water is flowing continuously on the road.',
+            image: '/images/water-leakage.jpg',
+            resolvedImage: '/images/resolved-leakage.jpg',
+            resolutionNote: 'Pipeline repaired and road restoration completed. Leakage stopped and road surface restored.',
+            citizen: {
+                name: 'Amit Kumar',
+                phone: '9876543212',
+                area: 'Nehru Nagar'
+            },
+            timeline: [
+                { status: 'registered', date: '2024-01-10 08:45', note: 'Complaint registered' },
+                { status: 'assigned', date: '2024-01-10 09:30', note: 'Assigned to Water Department' },
+                { status: 'in-progress', date: '2024-01-11 10:15', note: 'Repair work started' },
+                { status: 'resolved', date: '2024-01-12 16:20', note: 'Issue resolved successfully' }
+            ]
+        }
+    };
+
+    function loadComplaintDetails() {
+        const complaintId = localStorage.getItem('currentComplaintId') || 'CMP-001';
+        const complaint = demoComplaintDetails[complaintId];
+
+        if (!complaint) {
+            alert('Complaint not found');
+            window.location.href = '/resolver/dashboard';
+            return;
+        }
+
+        // Update basic info
+        document.getElementById('complaintTitle').textContent = complaint.title;
+        document.getElementById('complaintId').textContent = complaint.id;
+        document.getElementById('complaintDate').textContent = formatDate(complaint.createdAt);
+        document.getElementById('complaintDescription').textContent = complaint.description;
+        document.getElementById('complaintCategory').textContent = complaint.category;
+        document.getElementById('complaintLocation').textContent = complaint.location;
+        document.getElementById('complaintPriority').textContent = complaint.priority;
+
+        // Update status
+        const statusElement = document.getElementById('complaintStatus');
+        statusElement.className = `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusClass(complaint.status)}`;
+        statusElement.textContent = getStatusText(complaint.status);
+
+        // Update citizen info
+        document.getElementById('citizenName').textContent = complaint.citizen.name;
+        document.getElementById('citizenContact').textContent = complaint.citizen.phone;
+        document.getElementById('citizenArea').textContent = complaint.citizen.area;
+
+        // Update images
+        const issueImage = document.getElementById('issueImage');
+        const noImage = document.getElementById('noImage');
+        if (complaint.image) {
+            issueImage.src = complaint.image;
+            issueImage.classList.remove('hidden');
+            noImage.classList.add('hidden');
+        } else {
+            issueImage.classList.add('hidden');
+            noImage.classList.remove('hidden');
+        }
+
+        // Update resolution section
+        const resolutionSection = document.getElementById('resolutionSection');
+        const resolvedImage = document.getElementById('resolvedImage');
+        if (complaint.status === 'resolved') {
+            resolutionSection.classList.remove('hidden');
+            document.getElementById('resolutionNote').textContent = complaint.resolutionNote;
+            document.getElementById('resolvedDate').textContent = formatDate(complaint.resolvedAt);
+            
+            if (complaint.resolvedImage) {
+                resolvedImage.src = complaint.resolvedImage;
+                resolvedImage.classList.remove('hidden');
+            }
+        } else {
+            resolutionSection.classList.add('hidden');
+        }
+
+        // Update timeline
+        updateTimeline(complaint.timeline);
+    }
+
+    function updateTimeline(timeline) {
+        const timelineElement = document.getElementById('statusTimeline');
+        
+        timelineElement.innerHTML = timeline.map((item, index) => `
+            <div class="flex">
+                <div class="flex flex-col items-center mr-4">
+                    <div class="w-3 h-3 rounded-full ${getTimelineDotClass(item.status)}"></div>
+                    ${index < timeline.length - 1 ? '<div class="w-0.5 h-8 bg-gray-300 mt-1"></div>' : ''}
+                </div>
+                <div class="flex-1 pb-4">
+                    <p class="text-sm font-medium text-gray-900">${getTimelineStatusText(item.status)}</p>
+                    <p class="text-xs text-gray-500">${formatDateTime(item.date)}</p>
+                    ${item.note ? `<p class="text-sm text-gray-600 mt-1">${item.note}</p>` : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function getTimelineDotClass(status) {
+        const classes = {
+            'registered': 'bg-blue-500',
+            'assigned': 'bg-purple-500',
+            'in-progress': 'bg-orange-500',
+            'resolved': 'bg-green-500'
+        };
+        return classes[status] || 'bg-gray-500';
+    }
+
+    function getTimelineStatusText(status) {
+        const texts = {
+            'registered': 'Complaint Registered',
+            'assigned': 'Assigned to Department',
+            'in-progress': 'Work In Progress',
+            'resolved': 'Issue Resolved'
+        };
+        return texts[status] || status;
+    }
+
+    function formatDateTime(dateTimeString) {
+        return new Date(dateTimeString).toLocaleString('en-IN');
+    }
+
+    function updateComplaintStatus() {
+        const complaintId = localStorage.getItem('currentComplaintId');
+        window.location.href = `/resolver/update-status?complaint=${complaintId}`;
+    }
+
+    // Reuse these functions from dashboard
+    function getStatusClass(status) {
+        const classes = {
+            'pending': 'bg-yellow-100 text-yellow-800',
+            'in-progress': 'bg-blue-100 text-blue-800',
+            'resolved': 'bg-green-100 text-green-800'
+        };
+        return classes[status] || 'bg-gray-100 text-gray-800';
+    }
+
+    function getStatusText(status) {
+        const texts = {
+            'pending': 'Pending',
+            'in-progress': 'In Progress',
+            'resolved': 'Resolved'
+        };
+        return texts[status] || status;
+    }
+
+    function formatDate(dateString) {
+        return new Date(dateString).toLocaleDateString('en-IN', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+    }
+
+    // Load complaint details when page loads
+    document.addEventListener('DOMContentLoaded', loadComplaintDetails);
+</script>
+
+<%- include('../partials/footer') %>

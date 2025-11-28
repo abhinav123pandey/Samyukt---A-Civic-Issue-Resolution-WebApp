@@ -1,0 +1,197 @@
+<%- include('partials/header', { title: 'Samyukt - Civic Issue Resolution' }) %>
+<%- include('partials/navbar') %>
+
+<!-- Demo Login Banner (remove in production) -->
+<!-- <div class="bg-yellow-100 border-l-4 border-yellow-500 p-4">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center">
+        <div class="flex items-center mb-2 sm:mb-0">
+            <i class="fas fa-info-circle text-yellow-500 mr-2"></i>
+            <span class="text-yellow-700 font-medium">Demo Mode - Test different user roles:</span>
+        </div>
+        <div class="flex space-x-2">
+            <button onclick="demoLoginAsUser()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">
+                Login as Citizen
+            </button>
+            <button onclick="demoLoginAsResolver()" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm">
+                Login as Resolver
+            </button>
+            <button onclick="logout()" class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm">
+                Logout
+            </button>
+        </div>
+    </div>
+</div> -->
+
+<!-- Hero Section -->
+<section class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Together We Build Better Communities</h1>
+                <p class="text-xl mb-8 text-blue-100">
+                    Samyukt connects citizens with authorities to resolve civic issues efficiently. 
+                    Report problems, track progress, and see real change in your neighborhood.
+                </p>
+                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="/auth/register" class="bg-white text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-lg font-semibold text-center transition">
+                        Get Started
+                    </a>
+                    <a href="/about" class="border-2 border-white text-white hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold text-center transition">
+                        Learn More
+                    </a>
+                </div>
+            </div>
+            <div class="flex justify-center">
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 max-w-md">
+                    <div class="w-full h-64 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-users text-6xl text-white/60"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Rest of your homepage content remains the same -->
+<!-- How It Works Section -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">How Samyukt Works</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Step 1 -->
+            <div class="text-center p-6 rounded-lg bg-blue-50 border border-blue-100">
+                <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white text-xl font-bold mx-auto mb-4">
+                    1
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Report an Issue</h3>
+                <p class="text-gray-600">
+                    Citizens report civic problems with photos, location, and category. It takes just a few minutes.
+                </p>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="text-center p-6 rounded-lg bg-green-50 border border-green-100">
+                <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-white text-xl font-bold mx-auto mb-4">
+                    2
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Authorities Respond</h3>
+                <p class="text-gray-600">
+                    Relevant departments receive the complaint and provide status updates within 24 hours.
+                </p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="text-center p-6 rounded-lg bg-purple-50 border border-purple-100">
+                <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center text-white text-xl font-bold mx-auto mb-4">
+                    3
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Issue Resolved</h3>
+                <p class="text-gray-600">
+                    Authorities fix the problem, upload proof, and close the complaint. You get notified.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Problem Categories Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">Common Issues You Can Report</h2>
+        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            From garbage disposal to electricity problems, report any civic issue affecting your community.
+        </p>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Category 1 -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 text-center hover:shadow-md transition">
+                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center text-red-500 text-xl mx-auto mb-4">
+                    <i class="fas fa-trash"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Garbage Issues</h3>
+                <p class="text-gray-600 text-sm">
+                    Overflowing bins, irregular collection, waste dumping
+                </p>
+            </div>
+
+            <!-- Category 2 -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 text-center hover:shadow-md transition">
+                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center text-yellow-500 text-xl mx-auto mb-4">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Street Lights</h3>
+                <p class="text-gray-600 text-sm">
+                    Non-functional street lights, damaged poles
+                </p>
+            </div>
+
+            <!-- Category 3 -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 text-center hover:shadow-md transition">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-500 text-xl mx-auto mb-4">
+                    <i class="fas fa-road"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Road Problems</h3>
+                <p class="text-gray-600 text-sm">
+                    Potholes, broken roads, waterlogging issues
+                </p>
+            </div>
+
+            <!-- Category 4 -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 text-center hover:shadow-md transition">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-green-500 text-xl mx-auto mb-4">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Water Supply</h3>
+                <p class="text-gray-600 text-sm">
+                    Leakage, contamination, irregular supply
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<!-- <section class="py-16 bg-blue-600 text-white">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+                <div class="text-3xl md:text-4xl font-bold mb-2">10,000+</div>
+                <div class="text-blue-100">Issues Reported</div>
+            </div>
+            <div>
+                <div class="text-3xl md:text-4xl font-bold mb-2">85%</div>
+                <div class="text-blue-100">Resolution Rate</div>
+            </div>
+            <div>
+                <div class="text-3xl md:text-4xl font-bold mb-2">50+</div>
+                <div class="text-blue-100">Cities & Villages</div>
+            </div>
+            <div>
+                <div class="text-3xl md:text-4xl font-bold mb-2">24h</div>
+                <div class="text-blue-100">Avg. First Response</div>
+            </div>
+        </div>
+    </div>
+</section> -->
+
+<!-- CTA Section -->
+<section class="py-16 bg-white">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+        <h2 class="text-3xl font-bold text-gray-800 mb-4">Ready to Make a Difference?</h2>
+        <p class="text-gray-600 mb-8 text-lg max-w-2xl mx-auto">
+            Join thousands of citizens and authorities working together to build cleaner, safer, and better communities.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+            <a href="/auth/register" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition">
+                Sign Up as Citizen
+            </a>
+            <a href="/auth/register-resolver" class="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3 rounded-lg font-semibold transition">
+                Join as Authority
+            </a>
+        </div>
+    </div>
+</section>
+
+<%- include('partials/footer') %>

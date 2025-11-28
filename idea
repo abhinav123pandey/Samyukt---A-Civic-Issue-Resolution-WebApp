@@ -1,0 +1,184 @@
+🚀 Project Name: Samyukt
+
+A unified platform for citizens to report civic issues and for authorities to resolve them efficiently.
+
+🎯 Core Idea (Very Clean & Interview-Ready)
+
+Samyukt ek centralized complaint & issue tracking system hai jisme:
+
+Citizens apne area ki problems report karte hain
+(e.g., garbage, street-light failure, water leakage, broken roads, electricity issues, village problems, etc.)
+
+Resolvers (City departments / village panchayat / authorities) un complaints ko receive karte hain
+
+24 hours ke andar unko status update dena hota hai
+
+Resolve hone ke baad image + closing note ke saath problem close karte hain
+
+System ka goal: Cities aur villages dono ke real problems ko one unified platform par solve karna.
+
+Iska naam Samyukt isliye — kyunki system citizens + authorities + issues sab ko together connect karta hai.
+
+🧠 Key Features
+✔ User side (Citizen)
+
+Signup/Login
+
+File complaint (with image, location, category)
+
+Track complaint status
+
+Notification on updates
+
+Close-quality rating (optional)
+
+✔ Resolver side (Department/Authority)
+
+Login
+
+Receive issues assigned to their department
+
+Must update ETA within 24hrs
+
+Mark “in-progress” / “resolved”
+
+Upload resolution image
+
+Dashboard of pending/resolved tasks
+
+✔ Admin (optional, for future)
+
+Manage users
+
+Manage departments
+
+View all issues
+
+🔧 Tech Stack
+
+Node.js + Express — backend
+
+EJS — frontend templating
+
+TailwindCSS — modern styling
+
+MongoDB — database
+
+Multer — image upload
+
+JWT — authentication
+
+🏗 Complete Folder Structure
+Samyukt/
+│
+├── src/
+│   ├── config/
+│   │   └── db.js
+│   │
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── userController.js
+│   │   ├── complaintController.js
+│   │   └── resolverController.js
+│   │
+│   ├── middlewares/
+│   │   ├── authMiddleware.js
+│   │   └── uploadMiddleware.js
+│   │
+│   ├── models/
+│   │   ├── User.js
+│   │   ├── Resolver.js
+│   │   └── Complaint.js
+│   │
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   ├── userRoutes.js
+│   │   ├── resolverRoutes.js
+│   │   └── complaintRoutes.js
+│   │
+│   ├── utils/
+│   │   └── helpers.js
+│   │
+│   ├── views/
+│   │   ├── partials/
+│   │   │   ├── header.ejs
+│   │   │   ├── footer.ejs
+│   │   │   └── navbar.ejs
+│   │   │
+│   │   ├── auth/
+│   │   │   ├── login.ejs
+│   │   │   └── register.ejs
+│   │   │
+│   │   ├── user/
+│   │   │   ├── dashboard.ejs
+│   │   │   ├── createComplaint.ejs
+│   │   │   └── trackComplaint.ejs
+│   │   │
+│   │   ├── resolver/
+│   │   │   ├── dashboard.ejs
+│   │   │   └── updateStatus.ejs
+│   │   │
+│   │   └── index.ejs 
+│   │
+│   └── server.js
+│
+├── public/
+│   ├── images/
+│   ├── uploads/
+│   └── css/
+│
+├── package.json
+└── README.md
+
+🗂 Database Schema (Simple & Clear)
+1. User (Citizen)
+name  
+email  
+password  
+role = "user"  
+city  
+village/area  
+createdAt
+
+2. Resolver (Authority)
+department  
+city  
+email  
+password  
+role = "resolver"  
+createdAt
+
+3. Complaint
+title  
+description  
+category (electricity / garbage / road / water / others)  
+image  
+location  
+createdBy (User ID)  
+assignedTo (Resolver ID)
+status = pending / in-progress / resolved  
+eta  
+resolvedImage  
+resolvedAt  
+timestamps  
+
+🔄 System Flow (Easy to Explain)
+Citizen → Complaint Create → Resolver Assigned → Update in 24hrs → Resolve → Notify back
+
+User logs in
+
+Creates complaint
+
+System auto-assigns to department (based on category)
+
+Resolver sees it on dashboard
+
+Updates ETA within 24 hrs
+
+Fixes issue & uploads resolution image
+
+Complaint becomes “Resolved”
+
+User notified
+
+User can track entire lifecycle anytime

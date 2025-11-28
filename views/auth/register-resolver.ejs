@@ -1,0 +1,247 @@
+<%- include('../partials/header', { title: 'Register as Authority - Samyukt' }) %>
+<%- include('../partials/navbar') %>
+
+<div class="min-h-screen bg-gray-50 py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-2xl">
+        <div class="flex justify-center">
+            <i class="fas fa-building text-blue-600 text-4xl"></i>
+        </div>
+        <h2 class="mt-6 text-center text-3xl font-bold text-gray-900">
+            Register Your Department
+        </h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+            Join Samyukt as a resolving authority to efficiently handle civic issues
+        </p>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-2xl">
+        <div class="bg-white py-8 px-6 shadow sm:rounded-lg sm:px-10">
+            <form class="space-y-6" id="resolverForm" action="/auth/registerResolver" method="POST">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Department Information -->
+                    <div class="md:col-span-2">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Department Information</h3>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label for="departmentName" class="block text-sm font-medium text-gray-700">
+                            Department Name
+                        </label>
+                        <div class="mt-1">
+                            <input id="departmentName" name="departmentName" type="text" required 
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                placeholder="e.g., Municipal Corporation, Water Department">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="departmentType" class="block text-sm font-medium text-gray-700">
+                            Department Type
+                        </label>
+                        <div class="mt-1">
+                            <select id="departmentType" name="departmentType" required 
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <option value="">Select Type</option>
+                                <option value="municipal">Municipal Corporation</option>
+                                <option value="water">Water Department</option>
+                                <option value="electricity">Electricity Board</option>
+                                <option value="public works">Public Works Department</option>
+                                <option value="health">Health Department</option>
+                                <option value="transport">Transport Department</option>
+                                <option value="village">Village Panchayat</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="jurisdiction" class="block text-sm font-medium text-gray-700">
+                            Jurisdiction City
+                        </label>
+                        <div class="mt-1">
+                            <select id="jurisdiction" name="city" required 
+                                class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <option value="">Select City</option>
+                                <option value="delhi">Delhi</option>
+                                <option value="mumbai">Mumbai</option>
+                                <option value="chennai">Chennai</option>
+                                <option value="kolkata">Kolkata</option>
+                                <option value="bangalore">Bangalore</option>
+                                <option value="hyderabad">Hyderabad</option>
+                                <option value="pune">Pune</option>
+                                <option value="ahmedabad">Ahmedabad</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="md:col-span-2">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Contact Information</h3>
+                    </div>
+
+                    <div>
+                        <label for="contactPerson" class="block text-sm font-medium text-gray-700">
+                            Contact Person Name
+                        </label>
+                        <div class="mt-1">
+                            <input id="contactPerson" name="contactPerson" type="text" required 
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                placeholder="Name of responsible person">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="designation" class="block text-sm font-medium text-gray-700">
+                            Designation
+                        </label>
+                        <div class="mt-1">
+                            <input id="designation" name="designation" type="text" required 
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                placeholder="e.g., Officer, Manager">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="officialEmail" class="block text-sm font-medium text-gray-700">
+                            Official Email
+                        </label>
+                        <div class="mt-1">
+                            <input id="officialEmail" name="email" type="email" required 
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                placeholder="department@example.com">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700">
+                            Phone Number
+                        </label>
+                        <div class="mt-1">
+                            <input id="phone" name="phone" type="tel" required 
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                placeholder="Official phone number">
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label for="officeAddress" class="block text-sm font-medium text-gray-700">
+                            Office Address
+                        </label>
+                        <div class="mt-1">
+                            <textarea id="officeAddress" name="address" rows="3" required 
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                placeholder="Complete office address"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Account Credentials -->
+                    <div class="md:col-span-2">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Account Credentials</h3>
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">
+                            Password
+                        </label>
+                        <div class="mt-1">
+                            <input id="password" name="password" type="password" required 
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                placeholder="Create password">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="confirmPassword" class="block text-sm font-medium text-gray-700">
+                            Confirm Password
+                        </label>
+                        <div class="mt-1">
+                            <input id="confirmPassword" name="confirmPassword" type="password" required 
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                placeholder="Confirm password">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center">
+                    <input id="terms" name="terms" type="checkbox" required
+                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                    <label for="terms" class="ml-2 block text-sm text-gray-900">
+                        I agree that our department will respond to complaints within 24 hours and provide regular updates
+                    </label>
+                </div>
+
+                <div class="flex space-x-4">
+                    <button type="submit" 
+                        class="flex-1 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Register Department
+                    </button>
+                    <a href="/auth/register" 
+                        class="flex-1 py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-center">
+                        Register as Citizen
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- <script>
+    document.getElementById('resolverForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        // Validation
+        if (password !== confirmPassword) {
+            alert('Passwords do not match');
+            return;
+        }
+        
+        if (!document.getElementById('terms').checked) {
+            alert('Please accept the terms and conditions');
+            return;
+        }
+        
+        // For demo purposes - create resolver account
+        const resolverData = {
+            name: document.getElementById('departmentName').value,
+            email: document.getElementById('officialEmail').value,
+            role: 'resolver'
+        };
+        
+        // Store in localStorage (in real app, this would be API call)
+        localStorage.setItem('userRole', 'resolver');
+        localStorage.setItem('userName', resolverData.name);
+        localStorage.setItem('userEmail', resolverData.email);
+        
+        // Update UI state
+        if (typeof UserState !== 'undefined') {
+            UserState.setUser('resolver', resolverData.name);
+        }
+        
+        // Show success message and redirect
+        alert('Department registered successfully! Redirecting to dashboard...');
+        window.location.href = '/resolver/dashboard';
+    });
+
+    // Auto-fill for demo
+    function fillDemoData() {
+        document.getElementById('departmentName').value = 'Municipal Corporation of Delhi';
+        document.getElementById('departmentType').value = 'municipal';
+        document.getElementById('jurisdiction').value = 'delhi';
+        document.getElementById('contactPerson').value = 'Mr. Sharma';
+        document.getElementById('designation').value = 'Officer';
+        document.getElementById('officialEmail').value = 'municipal@demo.com';
+        document.getElementById('phone').value = '011-23456789';
+        document.getElementById('officeAddress').value = 'Town Hall, Delhi - 110001';
+        document.getElementById('password').value = 'demo123';
+        document.getElementById('confirmPassword').value = 'demo123';
+        document.getElementById('terms').checked = true;
+    }
+
+    // Uncomment the line below to enable auto-fill for testing
+    // document.addEventListener('DOMContentLoaded', fillDemoData);
+</script> -->
+
+<%- include('../partials/footer') %>
