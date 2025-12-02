@@ -9,5 +9,5 @@ router.get('/dashboard',isLoggedIn,async(req,res)=>{
     const resolver=await resolverModel.findOne({email});
     res.render('resolver/dashboard',{resolver});
 }) 
-
+ 
 module.exports = router; 

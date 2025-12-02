@@ -21,6 +21,7 @@ const registerResolver=require('./routes/registeResolver');
 const logout=require('./routes/logout');
 const resolverDashboard=require('./routes/dashboardR');
 const userDashboard=require('./routes/dashboardU');
+const createComplaint=require('./routes/createComplaint');
 //Databse connection and .ecv configuration 
 dotenv.config();
 connectDB(); 
@@ -55,10 +56,7 @@ app.get('/resolver/update-status',(req,res)=>{
 
 //User
 app.use('/user',userDashboard);
-
-app.get('/user/createComplaint',(req,res)=>{
-    res.render('user/createComplaint');
-})
+app.use('/user',createComplaint);
  
 app.get('/user/trackComplaint',(req,res)=>{
     res.render('user/trackComplaint');

@@ -118,7 +118,7 @@
             <div class="p-6 border-b border-gray-200">
                 <div class="flex flex-col items-center">
                     <div class="profile-image-container mb-4">
-                        <img id="profileImage" src="https://via.placeholder.com/100" alt="Profile" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow">
+                        <img id="profileImage" src="../public/images/userImages/default.png" alt="Profile" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow">
                         <div class="profile-image-overlay">
                             <i class="fas fa-camera text-white text-xl"></i>
                         </div>
@@ -126,7 +126,6 @@
                     </div>
                     <h2 class="text-xl font-semibold text-gray-800" id="userName"><%=user.name%></h2>
                     <p class="text-gray-600 text-sm">Citizen</p>
-                    <p class="text-gray-500 text-xs mt-1">Member since Jan 2023</p>
                 </div>
             </div>
 
@@ -136,11 +135,11 @@
                     <li>
                         <a href="#" class="flex items-center p-3 text-gray-700 bg-blue-50 rounded-lg font-medium">
                             <i class="fas fa-tachometer-alt mr-3 text-blue-600"></i>
-                            Dashboard Overview
+                            Overview
                         </a>
                     </li>
                     <li>
-                        <a href="/user/complaints" class="flex items-center p-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                        <a href="/user/complaint-details" class="flex items-center p-3 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
                             <i class="fas fa-list mr-3"></i>
                             My Complaints
                         </a>
@@ -179,11 +178,11 @@
                             </a>
                             <div class="flex items-center space-x-3">
                                 <div class="text-right hidden md:block">
-                                    <p class="font-medium text-gray-900">Alex Johnson</p>
+                                    <p class="font-medium text-gray-900"><%=user.name%></p>
                                     <p class="text-sm text-gray-500">Citizen</p>
                                 </div>
                                 <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
-                                    AJ
+                                    <%=user.name.charAt(0).toUpperCase()%>
                                 </div>
                             </div>
                         </div>
@@ -205,7 +204,7 @@
                                 </div>
                                 <div class="ml-4">
                                     <p class="text-sm font-medium text-gray-600">Total Issues Reported</p>
-                                    <p class="text-2xl font-bold text-gray-900" id="totalComplaints">0</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="totalComplaints"><%=user.complaints.length%></p>
                                 </div>
                             </div>
                         </div>
@@ -280,7 +279,7 @@
                                     <p class="text-green-100">View all your past and current complaints</p>
                                 </div>
                             </div>
-                            <a href="/user/complaints" class="inline-flex items-center font-medium mt-2 bg-white text-green-600 px-4 py-2 rounded-lg hover:bg-green-50 transition-colors">
+                            <a href="/user/complaints-details" class="inline-flex items-center font-medium mt-2 bg-white text-green-600 px-4 py-2 rounded-lg hover:bg-green-50 transition-colors">
                                 View History <i class="fas fa-arrow-right ml-2"></i>
                             </a>
                         </div>
@@ -368,49 +367,7 @@
     </div>
 
     <script>
-        // Demo complaints data for user
-        const userComplaints = [
-            {
-                id: 'CMP-001',
-                title: 'Garbage not collected for 3 days',
-                category: 'Garbage',
-                location: 'RK Puram, Sector 5',
-                status: 'pending',
-                createdAt: '2024-01-15',
-                description: 'Garbage has not been collected from our area for the past 3 days, causing foul smell and health concerns.',
-                image: '/images/garbage.jpg',
-                department: 'Municipal Corporation',
-                lastUpdate: '2024-01-15 10:30'
-            },
-            {
-                id: 'CMP-002',
-                title: 'Broken street light',
-                category: 'Electricity',
-                location: 'MG Road, Block B',
-                status: 'in-progress',
-                createdAt: '2024-01-14',
-                description: 'Street light pole number 45 is broken and leaning dangerously.',
-                image: '/images/street-light.jpg',
-                department: 'Electricity Department',
-                lastUpdate: '2024-01-15 09:30',
-                eta: '2024-01-18'
-            },
-            {
-                id: 'CMP-003',
-                title: 'Water leakage on main road',
-                category: 'Water',
-                location: 'Nehru Nagar',
-                status: 'resolved',
-                createdAt: '2024-01-10',
-                resolvedAt: '2024-01-12',
-                description: 'Major water pipeline leakage causing water wastage and road damage.',
-                image: '/images/water-leakage.jpg',
-                department: 'Water Department',
-                lastUpdate: '2024-01-12 16:20',
-                resolutionNote: 'Pipeline repaired and road restoration completed.'
-            }
-        ];
-
+        
         function loadUserComplaints() {
             const tableBody = document.getElementById('complaintsTable');
             const emptyState = document.getElementById('emptyState');

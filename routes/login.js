@@ -19,7 +19,7 @@ router.post('/login',async(req,res)=>{
                     const token = jwt.sign(email, process.env.SECRET);
                     res.cookie("token", token);
                     res.cookie("msg", "Registered Successfully!", { maxAge: 3000 });
-                    console.log("User added successfully");
+                    console.log("User logged in");
                     return res.redirect("/user/dashboard");
                 }
                 else{

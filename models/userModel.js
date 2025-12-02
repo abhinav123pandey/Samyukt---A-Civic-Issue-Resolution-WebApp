@@ -14,7 +14,11 @@ const user=mongoose.Schema({
     createdAt:{
         type:Date,
         default:Date.now()
-    }
+    },
+    complaints:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"complaint"
+    }]
 })
 
 module.exports=mongoose.model("user",user);

@@ -7,17 +7,26 @@ const complaint=mongoose.Schema({
     image:{
         type:String,
     },
+    city:String,
+    area:String,
     location:String,
-    userId:String,
-    resolverId:String,
     status:String,
+    priority:String,
     resolverETA:{
         type:Number,
         default:24
     },
     resolvedImage:{
         type:String
+    },
+    userId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"user"
+    },
+    resolverId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"user"
     }
 })
 
-module.exports=mongoose.model("conplaint",complaint);
+module.exports=mongoose.model("complaint",complaint);

@@ -1,330 +1,666 @@
-<%- include('../partials/header', { title: 'File Complaint - Samyukt' }) %>
-<%- include('../partials/navbar') %>
-
-<div class="min-h-screen bg-gray-50 py-8">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Header -->
-        <div class="mb-6">
-            <a href="/user/dashboard" class="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4">
-                <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
-            </a>
-            <h1 class="text-2xl font-bold text-gray-900">File a New Complaint</h1>
-            <p class="text-gray-600 mt-2">Report civic issues in your area. Your complaint will be forwarded to the concerned department.</p>
-        </div>
-
-        <!-- Complaint Form -->
-        <div class="bg-white shadow rounded-lg">
-            <form class="p-6 space-y-6" id="complaintForm">
-                <!-- Basic Information -->
-                <div>
-                    <h2 class="text-lg font-medium text-gray-900 mb-4">Issue Details</h2>
-                    
-                    <!-- Category -->
-                    <div class="mb-4">
-                        <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
-                            Issue Category <span class="text-red-500">*</span>
-                        </label>
-                        <select id="category" name="category" required 
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                            <option value="">Select Category</option>
-                            <option value="garbage">Garbage Collection</option>
-                            <option value="electricity">Street Lights</option>
-                            <option value="water">Water Supply</option>
-                            <option value="road">Road & Footpath</option>
-                            <option value="drainage">Drainage</option>
-                            <option value="parks">Parks & Gardens</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-
-                    <!-- Title -->
-                    <div class="mb-4">
-                        <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
-                            Complaint Title <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" id="title" name="title" required 
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            placeholder="Brief description of the issue">
-                    </div>
-
-                    <!-- Description -->
-                    <div class="mb-4">
-                        <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
-                            Detailed Description <span class="text-red-500">*</span>
-                        </label>
-                        <textarea id="description" name="description" rows="4" required 
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            placeholder="Describe the issue in detail, including when it started, how it's affecting you, etc."></textarea>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Complaint - Samyukt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        .form-section {
+            transition: all 0.3s ease;
+        }
+        .form-section:not(:last-child) {
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            width: 100px;
+        }
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            right: -50px;
+            width: 100px;
+            height: 2px;
+            background-color: #d1d5db;
+        }
+        .step.active:not(:last-child)::after {
+            background-color: #3b82f6;
+        }
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f3f4f6;
+            color: #6b7280;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            border: 2px solid #d1d5db;
+        }
+        .step.active .step-circle {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        .step-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-align: center;
+        }
+        .step.active .step-label {
+            color: #3b82f6;
+            font-weight: 500;
+        }
+        .complaint-preview {
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .complaint-preview h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+        .complaint-preview-item {
+            display: flex;
+            margin-bottom: 0.75rem;
+        }
+        .complaint-preview-label {
+            font-weight: 500;
+            width: 140px;
+            color: #4b5563;
+        }
+        .complaint-preview-value {
+            flex: 1;
+            color: #111827;
+        }
+        .priority-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .priority-medium {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .priority-high {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        .priority-critical {
+            background-color: #fecaca;
+            color: #7f1d1d;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Minimal Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-blue-700">Samyukt</h1>
                     </div>
                 </div>
-
-                <!-- Location Information -->
                 <div>
-                    <h2 class="text-lg font-medium text-gray-900 mb-4">Location Details</h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- City -->
-                        <div>
-                            <label for="city" class="block text-sm font-medium text-gray-700 mb-2">
-                                City <span class="text-red-500">*</span>
+                    <a href="/user/dashboard" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="py-8">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Page Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900">File a New Complaint</h1>
+                <p class="text-gray-600 mt-2">Report civic issues in your area. Your complaint will be forwarded to the concerned department.</p>
+            </div>
+
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step active" id="step1">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">Issue Details</div>
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Location</div>
+                </div>
+                <div class="step" id="step3">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Evidence</div>
+                </div>
+                <div class="step" id="step4">
+                    <div class="step-circle">4</div>
+                    <div class="step-label">Review</div>
+                </div>
+            </div>
+
+            <!-- Complaint Form -->
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <form class="p-6" action="/user/createComplaint" method="POST">
+                    <!-- Step 1: Issue Details -->
+                    <div class="form-section" id="section1">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Issue Details</h2>
+                        
+                        <!-- Category -->
+                        <div class="mb-6">
+                            <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
+                                Issue Category <span class="text-red-500">*</span>
                             </label>
-                            <select id="city" name="city" required 
-                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                <option value="">Select City</option>
-                                <option value="delhi">Delhi</option>
-                                <option value="mumbai">Mumbai</option>
-                                <option value="chennai">Chennai</option>
-                                <option value="kolkata">Kolkata</option>
-                                <option value="bangalore">Bangalore</option>
-                                <option value="hyderabad">Hyderabad</option>
+                            <select id="category" name="category" required 
+                                class="block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <option value="">Select Category</option>
+                                <option value="garbage">Garbage Collection</option>
+                                <option value="electricity">Street Lights</option>
+                                <option value="water">Water Supply</option>
+                                <option value="road">Road & Footpath</option>
+                                <option value="drainage">Drainage</option>
+                                <option value="parks">Parks & Gardens</option>
+                                <option value="other">Other</option>
                             </select>
                         </div>
 
-                        <!-- Area -->
-                        <div>
-                            <label for="area" class="block text-sm font-medium text-gray-700 mb-2">
-                                Area/Locality <span class="text-red-500">*</span>
+                        <!-- Title -->
+                        <div class="mb-6">
+                            <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
+                                Complaint Title <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" id="area" name="area" required 
-                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                placeholder="Your locality or area name">
+                            <input type="text" id="title" name="title" required 
+                                class="block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                placeholder="Brief description of the issue">
                         </div>
-                    </div>
 
-                    <!-- Specific Location -->
-                    <div class="mt-4">
-                        <label for="specificLocation" class="block text-sm font-medium text-gray-700 mb-2">
-                            Specific Location <span class="text-red-500">*</span>
-                        </label>
-                        <textarea id="specificLocation" name="specificLocation" rows="2" required 
-                            class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            placeholder="Exact location details (landmark, house number, street name, etc.)"></textarea>
-                    </div>
+                        <!-- Description -->
+                        <div class="mb-6">
+                            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                                Detailed Description <span class="text-red-500">*</span>
+                            </label>
+                            <textarea id="description" name="description" rows="4" required 
+                                class="block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                placeholder="Describe the issue in detail, including when it started, how it's affecting you, etc."></textarea>
+                        </div>
 
-                    <!-- Map Location (Optional) -->
-                    <div class="mt-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Pin Location on Map (Optional)
-                        </label>
-                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center bg-gray-50">
-                            <i class="fas fa-map-marker-alt text-gray-400 text-2xl mb-2"></i>
-                            <p class="text-sm text-gray-600">Click to mark the exact location on map</p>
-                            <button type="button" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 mt-2">
-                                <i class="fas fa-map mr-1"></i> Open Map
+                        <div class="flex justify-end">
+                            <button type="button" class="next-step px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Next: Location <i class="fas fa-arrow-right ml-2"></i>
                             </button>
                         </div>
                     </div>
-                </div>
 
-                <!-- Photo Evidence -->
-                <div>
-                    <h2 class="text-lg font-medium text-gray-900 mb-4">Photo Evidence</h2>
-                    
-                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                        <i class="fas fa-camera text-gray-400 text-2xl mb-2"></i>
-                        <p class="text-sm text-gray-600 mb-2">Upload clear photos of the issue</p>
-                        <p class="text-xs text-gray-500 mb-4">Supported formats: JPG, PNG (Max 5MB per file)</p>
+                    <!-- Step 2: Location Information -->
+                    <div class="form-section hidden" id="section2">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Location Details</h2>
                         
-                        <input type="file" id="complaintImage" name="complaintImage" 
-                            accept="image/*" class="hidden" multiple>
-                        <button type="button" onclick="document.getElementById('complaintImage').click()" 
-                            class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700">
-                            <i class="fas fa-upload mr-1"></i> Choose Files
-                        </button>
-                    </div>
-
-                    <!-- Image Preview -->
-                    <div id="imagePreviews" class="mt-4 grid grid-cols-2 md:grid-cols-3 gap-4 hidden">
-                        <!-- Image previews will be added here -->
-                    </div>
-                </div>
-
-                <!-- Priority -->
-                <div>
-                    <h2 class="text-lg font-medium text-gray-900 mb-4">Priority & Contact</h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Priority -->
-                        <div>
-                            <label for="priority" class="block text-sm font-medium text-gray-700 mb-2">
-                                Priority Level
-                            </label>
-                            <select id="priority" name="priority" 
-                                class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                <option value="medium">Medium - Normal Issue</option>
-                                <option value="high">High - Urgent Attention Needed</option>
-                                <option value="critical">Critical - Safety Hazard</option>
-                            </select>
-                        </div>
-
-                        <!-- Contact Preference -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Contact Preference
-                            </label>
-                            <div class="space-y-2">
-                                <label class="flex items-center">
-                                    <input type="radio" name="contactPreference" value="email" checked 
-                                        class="text-blue-600 focus:ring-blue-500">
-                                    <span class="ml-2 text-sm text-gray-700">Email Updates</span>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <!-- City -->
+                            <div>
+                                <label for="city" class="block text-sm font-medium text-gray-700 mb-2">
+                                    City <span class="text-red-500">*</span>
                                 </label>
-                                <label class="flex items-center">
-                                    <input type="radio" name="contactPreference" value="sms" 
-                                        class="text-blue-600 focus:ring-blue-500">
-                                    <span class="ml-2 text-sm text-gray-700">SMS Updates</span>
+                                <select id="city" name="city" required 
+                                    class="block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    <option value="">Select City</option>
+                                    <option value="delhi">Delhi</option>
+                                    <option value="mumbai">Mumbai</option>
+                                    <option value="chennai">Chennai</option>
+                                    <option value="kolkata">Kolkata</option>
+                                    <option value="bangalore">Bangalore</option>
+                                    <option value="hyderabad">Hyderabad</option>
+                                </select>
+                            </div>
+
+                            <!-- Area -->
+                            <div>
+                                <label for="area" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Area/Locality <span class="text-red-500">*</span>
                                 </label>
-                                <label class="flex items-center">
-                                    <input type="radio" name="contactPreference" value="both" 
-                                        class="text-blue-600 focus:ring-blue-500">
-                                    <span class="ml-2 text-sm text-gray-700">Both Email & SMS</span>
-                                </label>
+                                <input type="text" id="area" name="area" required 
+                                    class="block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                    placeholder="Your locality or area name">
                             </div>
                         </div>
+
+                        <!-- Specific Location -->
+                        <div class="mb-6">
+                            <label for="specificLocation" class="block text-sm font-medium text-gray-700 mb-2">
+                                Specific Location <span class="text-red-500">*</span>
+                            </label>
+                            <textarea id="specificLocation" name="specificLocation" rows="2" required 
+                                class="block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                placeholder="Exact location details (landmark, house number, street name, etc.)"></textarea>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <button type="button" class="prev-step px-6 py-3 border border-gray-300 text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <i class="fas fa-arrow-left mr-2"></i> Previous
+                            </button>
+                            <button type="button" class="next-step px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Next: Evidence <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Submit Button -->
-                <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-                    <button type="button" onclick="window.history.back()" 
-                        class="px-6 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        Cancel
-                    </button>
-                    <button type="submit" 
-                        class="px-6 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <i class="fas fa-paper-plane mr-2"></i>Submit Complaint
-                    </button>
-                </div>
-            </form>
-        </div>
+                    <!-- Step 3: Photo Evidence -->
+                    <div class="form-section hidden" id="section3">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Photo Evidence</h2>
+                        
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50 hover:bg-gray-100 transition-colors mb-6">
+                            <i class="fas fa-camera text-gray-400 text-3xl mb-3"></i>
+                            <p class="text-sm text-gray-600 mb-2">Upload clear photos of the issue</p>
+                            <p class="text-xs text-gray-500 mb-4">Supported formats: JPG, PNG (Max 5MB per file)</p>
+                            
+                            <input type="file" id="complaintImage" name="complaintImage" 
+                                accept="image/*" class="hidden" multiple>
+                            <button type="button" onclick="document.getElementById('complaintImage').click()" 
+                                class="bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-upload mr-1"></i> Choose Files
+                            </button>
+                        </div>
 
-        <!-- Help Section -->
-        <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-6">
-            <h3 class="font-medium text-blue-900 mb-3">Need Help Filing a Complaint?</h3>
-            <div class="text-sm text-blue-800 space-y-2">
-                <p><i class="fas fa-check-circle mr-2"></i> Be specific about the location and issue</p>
-                <p><i class="fas fa-check-circle mr-2"></i> Include clear photos for faster resolution</p>
-                <p><i class="fas fa-check-circle mr-2"></i> Choose the right category for your issue</p>
-                <p><i class="fas fa-check-circle mr-2"></i> You'll receive updates within 24 hours</p>
+                        <!-- Image Preview -->
+                        <div id="imagePreviews" class="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4 hidden">
+                            <!-- Image previews will be added here -->
+                        </div>
+
+                        <!-- Priority & Contact -->
+                        <div class="mt-8">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Priority & Contact</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Priority -->
+                                <div>
+                                    <label for="priority" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Priority Level
+                                    </label>
+                                    <select id="priority" name="priority" 
+                                        class="block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                        <option value="medium">Medium - Normal Issue</option>
+                                        <option value="high">High - Urgent Attention Needed</option>
+                                        <option value="critical">Critical - Safety Hazard</option>
+                                    </select>
+                                </div>
+
+                                <!-- Contact Preference -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Contact Preference
+                                    </label>
+                                    <div class="space-y-2">
+                                        <label class="flex items-center">
+                                            <input type="radio" name="contactPreference" value="email" checked 
+                                                class="text-blue-600 focus:ring-blue-500">
+                                            <span class="ml-2 text-sm text-gray-700">Email Updates</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="radio" name="contactPreference" value="sms" 
+                                                class="text-blue-600 focus:ring-blue-500">
+                                            <span class="ml-2 text-sm text-gray-700">SMS Updates</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="radio" name="contactPreference" value="both" 
+                                                class="text-blue-600 focus:ring-blue-500">
+                                            <span class="ml-2 text-sm text-gray-700">Both Email & SMS</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between mt-8">
+                            <button type="button" class="prev-step px-6 py-3 border border-gray-300 text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <i class="fas fa-arrow-left mr-2"></i> Previous
+                            </button>
+                            <button type="button" class="next-step px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Next: Review <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Review & Submit -->
+                    <div class="form-section hidden" id="section4">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Review Your Complaint</h2>
+                        
+                        <div class="complaint-preview">
+                            <h3>Complaint Summary</h3>
+                            
+                            <div class="complaint-preview-item">
+                                <div class="complaint-preview-label">Category:</div>
+                                <div class="complaint-preview-value" id="preview-category">-</div>
+                            </div>
+                            
+                            <div class="complaint-preview-item">
+                                <div class="complaint-preview-label">Title:</div>
+                                <div class="complaint-preview-value" id="preview-title">-</div>
+                            </div>
+                            
+                            <div class="complaint-preview-item">
+                                <div class="complaint-preview-label">Description:</div>
+                                <div class="complaint-preview-value" id="preview-description">-</div>
+                            </div>
+                            
+                            <div class="complaint-preview-item">
+                                <div class="complaint-preview-label">Location:</div>
+                                <div class="complaint-preview-value" id="preview-location">-</div>
+                            </div>
+                            
+                            <div class="complaint-preview-item">
+                                <div class="complaint-preview-label">Priority:</div>
+                                <div class="complaint-preview-value">
+                                    <span class="priority-badge" id="preview-priority">-</span>
+                                </div>
+                            </div>
+                            
+                            <div class="complaint-preview-item">
+                                <div class="complaint-preview-label">Contact Preference:</div>
+                                <div class="complaint-preview-value" id="preview-contact">-</div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between mt-8">
+                            <button type="button" class="prev-step px-6 py-3 border border-gray-300 text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <i class="fas fa-arrow-left mr-2"></i> Previous
+                            </button>
+                            <button type="submit" 
+                                class="px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <i class="fas fa-paper-plane mr-2"></i>Submit Complaint
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Help Section -->
+            <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+                <h3 class="font-medium text-blue-900 mb-3 flex items-center">
+                    <i class="fas fa-info-circle mr-2"></i> Need Help Filing a Complaint?
+                </h3>
+                <div class="text-sm text-blue-800 space-y-2">
+                    <p><i class="fas fa-check-circle mr-2"></i> Be specific about the location and issue</p>
+                    <p><i class="fas fa-check-circle mr-2"></i> Include clear photos for faster resolution</p>
+                    <p><i class="fas fa-check-circle mr-2"></i> Choose the right category for your issue</p>
+                    <p><i class="fas fa-check-circle mr-2"></i> You'll receive updates within 24 hours</p>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    // Image upload handling
-    document.getElementById('complaintImage').addEventListener('change', function(e) {
-        const files = e.target.files;
-        const previewContainer = document.getElementById('imagePreviews');
-        
-        if (files.length > 0) {
-            previewContainer.classList.remove('hidden');
-            previewContainer.innerHTML = '';
-            
-            Array.from(files).forEach(file => {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const previewDiv = document.createElement('div');
-                        previewDiv.className = 'relative';
-                        previewDiv.innerHTML = `
-                            <img src="${e.target.result}" alt="Preview" class="w-full h-32 object-cover rounded">
-                            <button type="button" onclick="removeImage(this)" 
-                                class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        `;
-                        previewContainer.appendChild(previewDiv);
-                    };
-                    reader.readAsDataURL(file);
+    <!-- Minimal Footer -->
+    <footer class="bg-white border-t mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex justify-between items-center">
+                <div class="text-sm text-gray-500">
+                    &copy; 2023 Samyukt. All rights reserved.
+                </div>
+                <div class="text-sm text-gray-500">
+                    <a href="#" class="text-blue-600 hover:text-blue-800">Privacy Policy</a> · 
+                    <a href="#" class="text-blue-600 hover:text-blue-800">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Multi-step form functionality
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        // Initialize step indicators
+        function updateStepIndicator() {
+            document.querySelectorAll('.step').forEach((step, index) => {
+                if (index + 1 <= currentStep) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
                 }
             });
-        } else {
-            previewContainer.classList.add('hidden');
         }
-    });
 
-    function removeImage(button) {
-        button.parentElement.remove();
-        // If no images left, hide the preview container
-        if (document.getElementById('imagePreviews').children.length === 0) {
-            document.getElementById('imagePreviews').classList.add('hidden');
+        // Show current step section
+        function showStep(stepNumber) {
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(`section${stepNumber}`).classList.remove('hidden');
+            currentStep = stepNumber;
+            updateStepIndicator();
         }
-    }
 
-    // Form submission
-    document.getElementById('complaintForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Basic validation
-        const requiredFields = ['category', 'title', 'description', 'city', 'area', 'specificLocation'];
-        let isValid = true;
-        
-        requiredFields.forEach(field => {
-            const element = document.getElementById(field);
-            if (!element.value.trim()) {
-                isValid = false;
-                element.classList.add('border-red-500');
+        // Next step button functionality
+        document.querySelectorAll('.next-step').forEach(button => {
+            button.addEventListener('click', function() {
+                if (validateStep(currentStep)) {
+                    if (currentStep === totalSteps - 1) {
+                        updatePreview();
+                    }
+                    showStep(currentStep + 1);
+                }
+            });
+        });
+
+        // Previous step button functionality
+        document.querySelectorAll('.prev-step').forEach(button => {
+            button.addEventListener('click', function() {
+                showStep(currentStep - 1);
+            });
+        });
+
+        // Validate current step
+        function validateStep(step) {
+            let isValid = true;
+            
+            if (step === 1) {
+                const requiredFields = ['category', 'title', 'description'];
+                requiredFields.forEach(field => {
+                    const element = document.getElementById(field);
+                    if (!element.value.trim()) {
+                        isValid = false;
+                        element.classList.add('border-red-500');
+                    } else {
+                        element.classList.remove('border-red-500');
+                    }
+                });
+            } else if (step === 2) {
+                const requiredFields = ['city', 'area', 'specificLocation'];
+                requiredFields.forEach(field => {
+                    const element = document.getElementById(field);
+                    if (!element.value.trim()) {
+                        isValid = false;
+                        element.classList.add('border-red-500');
+                    } else {
+                        element.classList.remove('border-red-500');
+                    }
+                });
+            }
+            
+            if (!isValid) {
+                alert('Please fill in all required fields before proceeding.');
+            }
+            
+            return isValid;
+        }
+
+        // Update preview section
+        function updatePreview() {
+            document.getElementById('preview-category').textContent = 
+                document.getElementById('category').options[document.getElementById('category').selectedIndex].text;
+            document.getElementById('preview-title').textContent = document.getElementById('title').value;
+            document.getElementById('preview-description').textContent = document.getElementById('description').value;
+            
+            const city = document.getElementById('city').options[document.getElementById('city').selectedIndex].text;
+            const area = document.getElementById('area').value;
+            const specificLocation = document.getElementById('specificLocation').value;
+            document.getElementById('preview-location').textContent = `${specificLocation}, ${area}, ${city}`;
+            
+            const priority = document.getElementById('priority').value;
+            const priorityText = document.getElementById('priority').options[document.getElementById('priority').selectedIndex].text;
+            const priorityBadge = document.getElementById('preview-priority');
+            priorityBadge.textContent = priorityText.split(' - ')[0];
+            priorityBadge.className = 'priority-badge';
+            
+            if (priority === 'medium') {
+                priorityBadge.classList.add('priority-medium');
+            } else if (priority === 'high') {
+                priorityBadge.classList.add('priority-high');
+            } else if (priority === 'critical') {
+                priorityBadge.classList.add('priority-critical');
+            }
+            
+            const contactPreference = document.querySelector('input[name="contactPreference"]:checked').value;
+            let contactText = '';
+            if (contactPreference === 'email') contactText = 'Email Updates';
+            else if (contactPreference === 'sms') contactText = 'SMS Updates';
+            else if (contactPreference === 'both') contactText = 'Both Email & SMS';
+            document.getElementById('preview-contact').textContent = contactText;
+        }
+
+        // Image upload handling
+        document.getElementById('complaintImage').addEventListener('change', function(e) {
+            const files = e.target.files;
+            const previewContainer = document.getElementById('imagePreviews');
+            
+            if (files.length > 0) {
+                previewContainer.classList.remove('hidden');
+                previewContainer.innerHTML = '';
+                
+                Array.from(files).forEach(file => {
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const previewDiv = document.createElement('div');
+                            previewDiv.className = 'relative';
+                            previewDiv.innerHTML = `
+                                <img src="${e.target.result}" alt="Preview" class="w-full h-32 object-cover rounded-lg shadow-sm">
+                                <button type="button" onclick="removeImage(this)" 
+                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            `;
+                            previewContainer.appendChild(previewDiv);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
             } else {
-                element.classList.remove('border-red-500');
+                previewContainer.classList.add('hidden');
             }
         });
-        
-        if (!isValid) {
-            alert('Please fill in all required fields');
-            return;
+
+        function removeImage(button) {
+            button.parentElement.remove();
+            // If no images left, hide the preview container
+            if (document.getElementById('imagePreviews').children.length === 0) {
+                document.getElementById('imagePreviews').classList.add('hidden');
+            }
         }
-        
-        // Simulate form submission
-        const submitBtn = document.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Submitting...';
-        submitBtn.disabled = true;
-        
-        // Simulate API call
-        setTimeout(() => {
-            // Generate complaint ID
-            const complaintId = 'CMP-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-            
-            // Store complaint data (in real app, this would be API call)
-            const complaintData = {
-                id: complaintId,
-                title: document.getElementById('title').value,
-                category: document.getElementById('category').value,
-                description: document.getElementById('description').value,
-                location: document.getElementById('specificLocation').value,
-                area: document.getElementById('area').value,
-                city: document.getElementById('city').value,
-                priority: document.getElementById('priority').value,
-                status: 'pending',
-                createdAt: new Date().toISOString()
-            };
-            
-            // Store in localStorage for demo
-            let userComplaints = JSON.parse(localStorage.getItem('userComplaints') || '[]');
-            userComplaints.unshift(complaintData);
-            localStorage.setItem('userComplaints', JSON.stringify(userComplaints));
-            
-            // Show success message
-            alert(`Complaint submitted successfully!\nYour Complaint ID: ${complaintId}`);
-            
-            // Redirect to dashboard
-            window.location.href = '/user/dashboard';
-        }, 2000);
-    });
 
-    // Demo data auto-fill for testing
-    function fillDemoData() {
-        document.getElementById('category').value = 'garbage';
-        document.getElementById('title').value = 'Garbage not collected for 3 days';
-        document.getElementById('description').value = 'Garbage has not been collected from our area for the past 3 days. The bins are overflowing and creating unhygienic conditions. Stray animals are scattering waste everywhere.';
-        document.getElementById('city').value = 'delhi';
-        document.getElementById('area').value = 'RK Puram';
-        document.getElementById('specificLocation').value = 'Sector 5, near Community Park, House No. 123';
-        document.getElementById('priority').value = 'high';
-    }
+        // Form submission
+        document.getElementById('complaintForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Final validation
+            const requiredFields = ['category', 'title', 'description', 'city', 'area', 'specificLocation'];
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                const element = document.getElementById(field);
+                if (!element.value.trim()) {
+                    isValid = false;
+                    element.classList.add('border-red-500');
+                } else {
+                    element.classList.remove('border-red-500');
+                }
+            });
+            
+            if (!isValid) {
+                alert('Please fill in all required fields');
+                showStep(1);
+                return;
+            }
+            
+            // Simulate form submission
+            const submitBtn = document.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Submitting...';
+            submitBtn.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Generate complaint ID
+                const complaintId = 'CMP-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+                
+                // Store complaint data (in real app, this would be API call)
+                const complaintData = {
+                    id: complaintId,
+                    title: document.getElementById('title').value,
+                    category: document.getElementById('category').value,
+                    description: document.getElementById('description').value,
+                    location: document.getElementById('specificLocation').value,
+                    area: document.getElementById('area').value,
+                    city: document.getElementById('city').value,
+                    priority: document.getElementById('priority').value,
+                    status: 'pending',
+                    createdAt: new Date().toISOString()
+                };
+                
+                // Store in localStorage for demo
+                let userComplaints = JSON.parse(localStorage.getItem('userComplaints') || '[]');
+                userComplaints.unshift(complaintData);
+                localStorage.setItem('userComplaints', JSON.stringify(userComplaints));
+                
+                // Show success message
+                alert(`Complaint submitted successfully!\nYour Complaint ID: ${complaintId}`);
+                
+                // Redirect to dashboard
+                window.location.href = '/user/dashboard';
+            }, 2000);
+        });
 
-    // Uncomment the line below to enable auto-fill for testing
-    // document.addEventListener('DOMContentLoaded', fillDemoData);
-</script>
+        // Initialize the form
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStepIndicator();
+            showStep(1);
+            
+            // Demo data auto-fill for testing (uncomment to enable)
+            // fillDemoData();
+        });
 
-<%- include('../partials/footer') %>
+        // Demo data auto-fill for testing
+        function fillDemoData() {
+            document.getElementById('category').value = 'garbage';
+            document.getElementById('title').value = 'Garbage not collected for 3 days';
+            document.getElementById('description').value = 'Garbage has not been collected from our area for the past 3 days. The bins are overflowing and creating unhygienic conditions. Stray animals are scattering waste everywhere.';
+            document.getElementById('city').value = 'delhi';
+            document.getElementById('area').value = 'RK Puram';
+            document.getElementById('specificLocation').value = 'Sector 5, near Community Park, House No. 123';
+            document.getElementById('priority').value = 'high';
+        }
+    </script>
+</body>
+</html>
