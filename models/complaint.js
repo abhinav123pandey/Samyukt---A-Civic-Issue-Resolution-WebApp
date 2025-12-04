@@ -10,7 +10,7 @@ const complaint=mongoose.Schema({
     city:String,
     area:String,
     location:String,
-    status:String,
+    statusOC:String,//pending, in progress, resolved
     priority:String,
     resolverETA:{
         type:Number,
@@ -26,6 +26,10 @@ const complaint=mongoose.Schema({
     resolverId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"user"
+    },
+    createdAt:{
+        type:Date,
+        default:Date.now()
     }
 })
 

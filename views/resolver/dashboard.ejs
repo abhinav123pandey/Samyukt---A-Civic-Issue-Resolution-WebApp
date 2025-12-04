@@ -159,7 +159,7 @@
                         </div>
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-600">Total Complaints</p>
-                            <p class="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent counter" id="totalComplaints">0</p>
+                            <p class="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent counter" id="totalComplaints"><%=resolver.complaints.length%></p>
                         </div>
                     </div>
                 </div>
@@ -172,7 +172,7 @@
                         </div>
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-600">Pending</p>
-                            <p class="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent counter" id="pendingComplaints">0</p>
+                            <p class="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent counter" id="pendingComplaints"><%=pending%></p>
                         </div>
                     </div>
                 </div>
@@ -185,7 +185,7 @@
                         </div>
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-600">In Progress</p>
-                            <p class="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent counter" id="inProgressComplaints">0</p>
+                            <p class="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent counter" id="inProgressComplaints"><%=inProgress%></p>
                         </div>
                     </div>
                 </div>
@@ -198,7 +198,7 @@
                         </div>
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-600">Resolved</p>
-                            <p class="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent counter" id="resolvedComplaints">0</p>
+                            <p class="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent counter" id="resolvedComplaints"><%=resolved%></p>
                         </div>
                     </div>
                 </div>
